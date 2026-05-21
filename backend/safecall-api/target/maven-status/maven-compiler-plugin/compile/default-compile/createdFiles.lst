@@ -1,0 +1,12 @@
+com\safecall\api\security\JwtAuthenticationFilter.class
+com\safecall\api\entity\Usuario.class
+com\safecall\api\security\SecurityConfig.class
+com\safecall\api\dto\UsuarioResponseDTO.class
+com\safecall\api\SafecallApiApplication.class
+com\safecall\api\controller\UsuarioController.class
+com\safecall\api\service\UsuarioService.class
+com\safecall\api\repository\UsuarioRepository.class
+com\safecall\api\dto\LoginDTO.class
+com\safecall\api\controller\AuthController.class
+com\safecall\api\security\JwtService.class
+com\safecall\api\dto\UsuarioRequestDTO.class
