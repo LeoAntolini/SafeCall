@@ -1,9 +1,11 @@
 package com.safecall.api.controller;
 
 import com.safecall.api.dto.LoginDTO;
+import com.safecall.api.dto.LoginResponseDTO;
 import com.safecall.api.entity.Usuario;
 import com.safecall.api.repository.UsuarioRepository;
 import com.safecall.api.security.JwtService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,8 +35,7 @@ public class AuthController {
 
         boolean senhaCorreta = passwordEncoder.matches(
                 dto.getSenha(),
-                usuario.getSenhaHash()
-        );
+                usuario.getSenhaHash());
 
         if (!senhaCorreta) {
             return ResponseEntity.badRequest().body("Senha inválida");
@@ -42,6 +43,7 @@ public class AuthController {
 
         String token = jwtService.gerarToken(usuario.getEmail());
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(
+                new LoginResponseDTO(token));
     }
 }
