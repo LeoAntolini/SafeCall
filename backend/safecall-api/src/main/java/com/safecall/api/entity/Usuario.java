@@ -3,6 +3,8 @@ package com.safecall.api.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -16,6 +18,7 @@ public class Usuario {
     private String email;
 
     @Column(name = "senha_hash")
+    @JsonIgnore
     private String senhaHash;
 
     private String role;
