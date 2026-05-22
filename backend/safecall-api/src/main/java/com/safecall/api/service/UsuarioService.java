@@ -26,7 +26,6 @@ public class UsuarioService {
         usuario.setNome(dto.getNome());
         usuario.setEmail(dto.getEmail());
 
-        // AQUI É O MAIS IMPORTANTE
         usuario.setSenhaHash(
             passwordEncoder.encode(dto.getSenha())
         );
@@ -36,5 +35,9 @@ public class UsuarioService {
         usuario.setCreatedAt(LocalDateTime.now());
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Usuario buscarPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
     }
 }

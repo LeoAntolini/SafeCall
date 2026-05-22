@@ -1,34 +1,55 @@
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 function Dashboard() {
 
-    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
 
-    function logout() {
-        localStorage.removeItem("token");
-        window.location.href = "/";
+    const {
+        usuario,
+        logout
+    } = useAuth();
+
+    if (!usuario) {
+
+        return (
+            <h2>Carregando usuário...</h2>
+        );
+    }
+
+    function sair() {
+
+        logout();
+
+        navigate("/");
     }
 
     return (
-        <div>
-            <h1>Dashboard</h1>
 
-            <p>Usuário autenticado</p>
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <h2>
+                Bem-vindo, {usuario.nome}
+            </h2>
 
             <p>
-                Token:
+                Email: {usuario.email}
             </p>
 
-            <textarea
-                value={token}
-                readOnly
-                rows={10}
-                cols={60}
-            />
+            <p>
+                Cargo: {usuario.role}
+            </p>
 
-            <br /><br />
+            <br />
 
-            <button onClick={logout}>
+            <button onClick={sair}>
                 Sair
             </button>
+
         </div>
     );
 }
