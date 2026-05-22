@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 
 function Login() {
-    
+
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const { login } = useAuth();
     const navigate = useNavigate();
-    
+
     async function fazerLogin(e) {
         e.preventDefault();
-        
+
         try {
 
             const response = await api.post("/auth/login", {
@@ -69,8 +70,14 @@ function Login() {
                     Entrar
                 </button>
 
+
             </form>
 
+            <br />
+
+            <Link to="/register">
+                Criar conta
+            </Link>
         </div>
     );
 }
