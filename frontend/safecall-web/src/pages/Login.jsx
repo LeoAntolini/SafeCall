@@ -1,83 +1,177 @@
 import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
 function Login() {
 
-    const [email, setEmail] = useState("");
-    const [senha, setSenha] = useState("");
-    const { login } = useAuth();
     const navigate = useNavigate();
 
-    async function fazerLogin(e) {
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+
+    const fazerLogin = async (e) => {
+
         e.preventDefault();
 
         try {
 
-            const response = await api.post("/auth/login", {
-                email,
-                senha
-            });
+            const response = await api.post(
+                "/auth/login",
+                {
+                    email,
+                    senha
+                }
+            );
 
-            console.log(response.data);
+            localStorage.setItem(
+                "token",
+                response.data.token
+            );
 
-            login(response.data.token);
-
-            window.location.href = "/dashboard";
+            navigate("/dashboard");
 
         } catch (error) {
 
             console.log(error);
 
-            alert("Erro no login");
+            alert("Credenciais inválidas");
         }
-    }
+    };
 
     return (
-        <div>
 
-            <h1>Login SafeCall</h1>
+        <div className="
+            min-h-screen
+            flex
+            items-center
+            justify-center
+            bg-gradient-to-br
+            from-blue-950
+            via-slate-900
+            to-black
+            p-6
+        ">
 
-            <form onSubmit={fazerLogin}>
+            <div className="
+                w-full
+                max-w-md
+                bg-white/10
+                backdrop-blur-lg
+                border
+                border-white/10
+                rounded-3xl
+                shadow-2xl
+                p-10
+            ">
 
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) =>
-                        setEmail(e.target.value)
-                    }
-                />
+                <div className="text-center mb-10">
 
-                <br />
-                <br />
+                    <h1 className="
+                        text-5xl
+                        font-bold
+                        text-white
+                    ">
+                        SafeCall
+                    </h1>
 
-                <input
-                    type="password"
-                    placeholder="Senha"
-                    value={senha}
-                    onChange={(e) =>
-                        setSenha(e.target.value)
-                    }
-                />
+                    <p className="
+                        text-gray-300
+                        mt-3
+                    ">
+                        Plataforma inteligente contra golpes telefônicos
+                    </p>
 
-                <br />
-                <br />
+                </div>
 
-                <button type="submit">
-                    Entrar
-                </button>
+                <form
+                    onSubmit={fazerLogin}
+                    className="space-y-5"
+                >
 
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) =>
+                            setEmail(e.target.value)
+                        }
+                        className="
+                            w-full
+                            p-4
+                            rounded-xl
+                            bg-white/10
+                            border
+                            border-white/10
+                            text-white
+                            placeholder-gray-400
+                            outline-none
+                            focus:border-blue-500
+                        "
+                    />
 
-            </form>
+                    <input
+                        type="password"
+                        placeholder="Senha"
+                        value={senha}
+                        onChange={(e) =>
+                            setSenha(e.target.value)
+                        }
+                        className="
+                            w-full
+                            p-4
+                            rounded-xl
+                            bg-white/10
+                            border
+                            border-white/10
+                            text-white
+                            placeholder-gray-400
+                            outline-none
+                            focus:border-blue-500
+                        "
+                    />
 
-            <br />
+                    <button
+                        type="submit"
+                        className="
+                            w-full
+                            bg-blue-600
+                            hover:bg-blue-700
+                            transition
+                            text-white
+                            p-4
+                            rounded-xl
+                            font-bold
+                        "
+                    >
+                        Entrar
+                    </button>
 
-            <Link to="/register">
-                Criar conta
-            </Link>
+                </form>
+
+                <p className="
+                    text-center
+                    text-gray-400
+                    mt-6
+                ">
+
+                    Não possui conta?
+
+                    {" "}
+
+                    <Link
+                        to="/register"
+                        className="
+                            text-blue-400
+                            hover:text-blue-300
+                        "
+                    >
+                        Criar conta
+                    </Link>
+
+                </p>
+
+            </div>
+
         </div>
     );
 }
