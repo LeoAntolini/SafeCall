@@ -116,6 +116,76 @@ function Dashboard() {
         return valor;
     };
 
+    const getCorRisco = (risco) => {
+
+        switch (risco) {
+
+            case "ALTO":
+                return `
+                bg-red-100
+                text-red-700
+            `;
+
+            case "MEDIO":
+                return `
+                bg-yellow-100
+                text-yellow-700
+            `;
+
+            case "BAIXO":
+                return `
+                bg-green-100
+                text-green-700
+            `;
+
+            default:
+                return `
+                bg-gray-100
+                text-gray-700
+            `;
+        }
+    };
+
+    const [busca, setBusca] = useState("");
+
+    const denunciasFiltradas = denuncias.filter((denuncia) =>
+        denuncia.numeroTelefone
+            .toLowerCase()
+            .includes(busca.toLowerCase())
+    );
+
+    const rankingGolpes = {};
+
+    denuncias.forEach((denuncia) => {
+
+        if (rankingGolpes[denuncia.tipoGolpe]) {
+
+            rankingGolpes[denuncia.tipoGolpe]++;
+
+        } else {
+
+            rankingGolpes[denuncia.tipoGolpe] = 1;
+        }
+    });
+
+    const rankingNumeros = {};
+
+    denuncias.forEach((denuncia) => {
+
+        if (rankingNumeros[denuncia.numeroTelefone]) {
+
+            rankingNumeros[
+                denuncia.numeroTelefone
+            ]++;
+
+        } else {
+
+            rankingNumeros[
+                denuncia.numeroTelefone
+            ] = 1;
+        }
+    });
+
     return (
 
         <Layout>
@@ -145,11 +215,14 @@ function Dashboard() {
                     shadow
                 ">
                     <h2 className="text-gray-500">
-                        Denuncias Resgistradas
+                        Total de Denúncias
                     </h2>
 
                     <p className="text-4xl font-bold mt-3">
                         {denuncias.length}
+                    </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                        denúncias registradas no sistema
                     </p>
                 </div>
 
@@ -160,7 +233,7 @@ function Dashboard() {
                     shadow
                 ">
                     <h2 className="text-gray-500">
-                        Golpes de Alto Risco
+                        Risco Elevado
                     </h2>
 
                     <p className="text-4xl font-bold mt-3 text-red-500">
@@ -170,6 +243,9 @@ function Dashboard() {
                             ).length
                         }
                     </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                        denúncias classificadas como críticas
+                    </p>
                 </div>
 
                 <div className="
@@ -179,18 +255,144 @@ function Dashboard() {
                     shadow
                 ">
                     <h2 className="text-gray-500">
-                        Números Suspeitos
+                        Números Denunciados
                     </h2>
 
                     <p className="text-4xl font-bold mt-3">
                         {
                             new Set(
-                                denuncias.map(
+                                denunciasFiltradas.map(
                                     (d) => d.numeroTelefone
                                 )
                             ).size
                         }
                     </p>
+                    <p className="text-sm text-gray-400 mt-2">
+                        telefones únicos denunciados
+                    </p>
+                </div>
+
+            </div>
+
+            <div className="
+                bg-white
+                p-6
+                rounded-2xl
+                shadow
+                mt-10
+            ">
+
+                <h2 className="
+                    text-2xl
+                    font-bold
+                    mb-6
+                ">
+                    Golpes Mais Reportados
+                </h2>
+
+                <div className="space-y-4">
+
+                    {Object.entries(rankingGolpes)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([tipo, quantidade]) => (
+
+                            <div
+                                key={tipo}
+                                className="
+                                    flex
+                                    justify-between
+                                    items-center
+                                    border-b
+                                    pb-3
+                                "
+                            >
+
+                                <span className="font-medium">
+                                    {tipo.replaceAll("_", " ")}
+                                </span>
+
+                                <span className="
+                                    bg-blue-100
+                                    text-blue-700
+                                    px-3
+                                    py-1
+                                    rounded-full
+                                    text-sm
+                                ">
+                                    {quantidade}
+                                </span>
+
+                            </div>
+
+                        ))}
+
+                </div>
+
+            </div>
+
+            <div className="
+    bg-white
+    p-6
+    rounded-2xl
+    shadow
+    mt-10
+">
+
+                <h2 className="
+        text-2xl
+        font-bold
+        mb-6
+    ">
+                    Números Mais Denunciados
+                </h2>
+
+                <div className="space-y-4">
+
+                    {Object.entries(rankingNumeros)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([numero, quantidade]) => (
+
+                            <div
+                                key={numero}
+                                className="
+                        flex
+                        justify-between
+                        items-center
+                        border-b
+                        pb-3
+                    "
+                            >
+
+                                <span className="font-medium">
+                                    {numero}
+                                </span>
+
+                                <span className={`
+                        px-3
+                        py-1
+                        rounded-full
+                        text-sm
+
+                        ${quantidade >= 5
+                                        ? `
+                                bg-red-100
+                                text-red-700
+                              `
+                                        : `
+                                bg-yellow-100
+                                text-yellow-700
+                              `
+                                    }
+                    `}>
+
+                                    {quantidade} denúncias
+
+                                </span>
+
+                            </div>
+
+                        ))}
+
                 </div>
 
             </div>
@@ -314,6 +516,7 @@ function Dashboard() {
 
             </div>
 
+
             <div className="mt-10">
 
                 <div className="
@@ -328,9 +531,30 @@ function Dashboard() {
                         font-bold
                         mb-6
                     ">
-                        Chamados Recentes
+                        Denuncias Recentes
                     </h2>
 
+                    <div className="mb-6">
+
+                        <input
+                            type="text"
+                            placeholder="Buscar telefone..."
+                            value={busca}
+                            maxLength={15}
+                            onChange={(e) =>
+                                setBusca(
+                                    formatarTelefone(e.target.value)
+                                )
+                            }
+                            className="
+                                w-full
+                                border
+                                p-3
+                                rounded-lg
+                            "
+                        />
+
+                    </div>
                     <table className="w-full">
 
                         <thead>
@@ -362,7 +586,7 @@ function Dashboard() {
 
                         <tbody>
 
-                            {denuncias.map((denuncia) => (
+                            {denunciasFiltradas.map((denuncia) => (
 
                                 <tr
                                     key={denuncia.id}
@@ -383,14 +607,13 @@ function Dashboard() {
 
                                     <td>
 
-                                        <span className="
-                                            bg-red-100
-                                            text-red-700
+                                        <span className={`
+                                            ${getCorRisco(denuncia.nivelRisco)}
                                             px-3
                                             py-1
                                             rounded-full
                                             text-sm
-                                        ">
+                                        `}>
                                             {denuncia.nivelRisco}
                                         </span>
 
