@@ -4,6 +4,14 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
+import {
+    PieChart,
+    Pie,
+    Cell,
+    Tooltip,
+    ResponsiveContainer
+} from "recharts";
+
 
 function Dashboard() {
 
@@ -168,6 +176,24 @@ function Dashboard() {
         }
     });
 
+    const dadosGrafico = Object.entries(
+        rankingGolpes
+    ).map(([tipo, quantidade]) => ({
+
+        name: tipo.replaceAll("_", " "),
+        value: quantidade
+
+    }));
+
+    const COLORS = [
+        "#2563eb",
+        "#dc2626",
+        "#f59e0b",
+        "#16a34a",
+        "#9333ea",
+        "#0891b2"
+    ];
+
     const rankingNumeros = {};
 
     denuncias.forEach((denuncia) => {
@@ -185,6 +211,12 @@ function Dashboard() {
             ] = 1;
         }
     });
+
+    const numerosCriticos = Object.entries(
+        rankingNumeros
+    ).filter(
+        ([_, quantidade]) => quantidade >= 5
+    );
 
     return (
 
@@ -273,6 +305,114 @@ function Dashboard() {
                 </div>
 
             </div>
+
+            <div className="
+    bg-white
+    p-6
+    rounded-2xl
+    shadow
+    mt-10
+">
+
+                <h2 className="
+        text-2xl
+        font-bold
+        mb-6
+    ">
+                    Distribuição de Golpes
+                </h2>
+
+                <div
+                    style={{
+                        width: "100%",
+                        height: 400
+                    }}
+                >
+
+                    <ResponsiveContainer
+                        width="100%"
+                        height="100%"
+                    >
+
+                        <PieChart>
+
+                            <Pie
+                                data={dadosGrafico}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={120}
+                                label
+                            >
+
+                                {dadosGrafico.map(
+                                    (_, index) => (
+
+                                        <Cell
+                                            key={index}
+                                            fill={
+                                                COLORS[
+                                                index % COLORS.length
+                                                ]
+                                            }
+                                        />
+
+                                    )
+                                )}
+
+                            </Pie>
+
+                            <Tooltip />
+
+                        </PieChart>
+
+                    </ResponsiveContainer>
+
+                </div>
+
+            </div>
+
+            {
+                numerosCriticos.length > 0 && (
+
+                    <div className="
+            bg-red-100
+            border
+            border-red-300
+            text-red-700
+            p-5
+            rounded-2xl
+            mb-8
+        ">
+
+                        <h2 className="
+                text-2xl
+                font-bold
+                mb-3
+            ">
+                            ⚠️ Alerta de Fraude
+                        </h2>
+
+                        <p>
+
+                            Existem
+                            {" "}
+
+                            <strong>
+                                {numerosCriticos.length}
+                            </strong>
+
+                            {" "}
+                            números com alta reincidência
+                            de denúncias.
+
+                        </p>
+
+                    </div>
+
+                )
+            }
 
             <div className="
                 bg-white
