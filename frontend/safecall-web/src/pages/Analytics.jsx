@@ -12,6 +12,8 @@ import {
     ResponsiveContainer
 } from "recharts";
 
+import toast from "react-hot-toast";
+
 
 function Analytics() {
 
@@ -38,7 +40,7 @@ function Analytics() {
 
             console.log(error);
 
-            alert("Erro ao buscar analytics");
+            toast.error("Erro ao buscar analytics");
         }
     };
 

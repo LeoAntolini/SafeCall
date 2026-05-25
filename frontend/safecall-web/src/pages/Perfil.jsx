@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
+import toast from "react-hot-toast";
+
 function Perfil() {
 
     const { usuario } = useAuth();
@@ -36,7 +38,7 @@ function Perfil() {
 
             console.log(error);
 
-            alert("Erro ao buscar denúncias");
+            toast.error("Erro ao buscar denúncias");
         }
     };
 
@@ -75,7 +77,7 @@ function Perfil() {
 
             console.log(error);
 
-            alert("Erro ao atualizar status");
+            toast.error("Erro ao atualizar status");
         }
     };
 
@@ -205,85 +207,91 @@ function Perfil() {
                                     Status
                                 </th>
 
-                                <th className="pb-4">
-                                    Alterar
-                                </th>
-
                             </tr>
 
                         </thead>
 
                         <tbody>
 
-                            {denuncias.map((denuncia) => (
+                            {
+                                denuncias.length > 0 ? (
 
-                                <tr
-                                    key={denuncia.id}
-                                    className="border-b"
-                                >
+                                    denuncias.map((denuncia) => (
 
-                                    <td className="py-4">
-                                        {denuncia.numeroTelefone}
-                                    </td>
+                                        <tr
+                                            key={denuncia.id}
+                                            className="border-b"
+                                        >
 
-                                    <td>
-                                        {
-                                            denuncia.tipoGolpe
-                                                .replaceAll("_", " ")
-                                        }
-                                    </td>
+                                            <td className="py-4">
+                                                {denuncia.numeroTelefone}
+                                            </td>
 
-                                    <td>
+                                            <td>
+                                                {
+                                                    denuncia.tipoGolpe
+                                                        .replaceAll("_", " ")
+                                                }
+                                            </td>
 
-                                        <span className="
-                                            bg-blue-100
-                                            text-blue-700
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            text-sm
-                                        ">
-                                            {denuncia.status}
-                                        </span>
+                                            <td>
 
-                                    </td>
+                                                <select
+                                                    value={denuncia.status}
+                                                    onChange={(e) =>
+                                                        alterarStatus(
+                                                            denuncia.id,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    className="
+                                                        border
+                                                        rounded-lg
+                                                        p-2
+                                                    "
+                                                >
 
-                                    <td>
+                                                    <option value="PENDENTE">
+                                                        PENDENTE
+                                                    </option>
 
-                                        <select
-                                            value={denuncia.status}
-                                            onChange={(e) =>
-                                                alterarStatus(
-                                                    denuncia.id,
-                                                    e.target.value
-                                                )
-                                            }
+                                                    <option value="EM_ANALISE">
+                                                        EM ANÁLISE
+                                                    </option>
+
+                                                    <option value="RESOLVIDO">
+                                                        RESOLVIDO
+                                                    </option>
+
+                                                </select>
+
+                                            </td>
+
+                                        </tr>
+
+                                    ))
+
+                                ) : (
+
+                                    <tr>
+
+                                        <td
+                                            colSpan="4"
                                             className="
-                                                border
-                                                rounded-lg
-                                                p-2
+                                                text-center
+                                                py-10
+                                                text-gray-400
                                             "
                                         >
 
-                                            <option value="PENDENTE">
-                                                PENDENTE
-                                            </option>
+                                            Nenhuma denúncia encontrada
 
-                                            <option value="EM_ANALISE">
-                                                EM ANÁLISE
-                                            </option>
+                                        </td>
 
-                                            <option value="RESOLVIDO">
-                                                RESOLVIDO
-                                            </option>
+                                    </tr>
 
-                                        </select>
-
-                                    </td>
-
-                                </tr>
-
-                            ))}
+                                )
+                            }
 
                         </tbody>
 

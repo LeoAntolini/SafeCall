@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import api from "../services/api";
 
+import toast from "react-hot-toast";
+
 function Home() {
 
     const { usuario } = useAuth();
@@ -32,7 +34,7 @@ function Home() {
 
             console.log(error);
 
-            alert("Erro ao buscar denúncias");
+            toast.error("Erro ao buscar denúncias");
         }
     };
 
@@ -85,6 +87,36 @@ function Home() {
                     bg-gray-100
                     text-gray-700
                 `;
+        }
+    };
+
+    const getCorStatus = (status) => {
+
+        switch (status) {
+
+            case "PENDENTE":
+                return `
+                bg-yellow-100
+                text-yellow-700
+            `;
+
+            case "EM_ANALISE":
+                return `
+                bg-blue-100
+                text-blue-700
+            `;
+
+            case "RESOLVIDO":
+                return `
+                bg-green-100
+                text-green-700
+            `;
+
+            default:
+                return `
+                bg-gray-100
+                text-gray-700
+            `;
         }
     };
 
@@ -224,61 +256,81 @@ Buscar telefone ou tipo de golpe...
 
                         <tbody>
 
-                            {denunciasFiltradas.map((denuncia) => (
+                            {
+                                denunciasFiltradas.length > 0 ? (
 
-                                <tr
-                                    key={denuncia.id}
-                                    className="border-b"
-                                >
+                                    denunciasFiltradas.map((denuncia) => (
 
-                                    <td className="py-4">
-                                        {denuncia.numeroTelefone}
-                                    </td>
+                                        <tr key={denuncia.id}>
+                                            <td className="py-4">
+                                                {denuncia.numeroTelefone}
+                                            </td>
 
-                                    <td>
-                                        {
-                                            denuncia.tipoGolpe
-                                                .replaceAll("_", " ")
-                                        }
-                                    </td>
+                                            <td>
+                                                {
+                                                    denuncia.tipoGolpe
+                                                        .replaceAll("_", " ")
+                                                }
+                                            </td>
 
-                                    <td>
+                                            <td>
 
-                                        <span className={`
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            text-sm
+                                                <span className={`
+                                                    px-3
+                                                    py-1
+                                                    rounded-full
+                                                    text-sm
 
-                                            ${getCorRisco(
-                                                denuncia.nivelRisco
-                                            )}
-                                        `}>
+                                                    ${getCorRisco(
+                                                            denuncia.nivelRisco
+                                                        )}
+                                                `}>
 
-                                            {denuncia.nivelRisco}
+                                                    {denuncia.nivelRisco}
 
-                                        </span>
+                                                </span>
 
-                                    </td>
+                                            </td>
 
-                                    <td>
+                                            <td>
 
-                                        <span className="
-                                            bg-blue-100
-                                            text-blue-700
-                                            px-3
-                                            py-1
-                                            rounded-full
-                                            text-sm
-                                        ">
-                                            {denuncia.status}
-                                        </span>
+                                                <span className="
+                                                    bg-blue-100
+                                                    text-blue-700
+                                                    px-3
+                                                    py-1
+                                                    rounded-full
+                                                    text-sm
+                                                ">
+                                                    {denuncia.status}
+                                                </span>
 
-                                    </td>
+                                            </td>               
+                                        </tr>
 
-                                </tr>
+                                    ))
 
-                            ))}
+                                ) : (
+
+                                    <tr>
+
+                                        <td
+                                            colSpan="4"
+                                            className="
+                                                text-center
+                                                py-10
+                                                text-gray-400
+                                            "
+                                        >
+
+                                            Nenhuma denúncia encontrada
+
+                                        </td>
+
+                                    </tr>
+
+                                )
+                            }
 
                         </tbody>
 

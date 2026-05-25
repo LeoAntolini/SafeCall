@@ -71,8 +71,6 @@ function Layout({ children }) {
                 top-0
                 left-0
                 z-50
-
-                h-screen
                 w-64
 
                 bg-gray-900

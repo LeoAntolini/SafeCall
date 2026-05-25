@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
+import toast from "react-hot-toast";
+
 function Register() {
 
     const navigate = useNavigate();
@@ -10,11 +12,49 @@ function Register() {
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
     const cadastrar = async (e) => {
 
         e.preventDefault();
 
+
+        if (
+            !nome.trim() ||
+            !email.trim() ||
+            !senha.trim()
+        ) {
+
+            toast.error(
+                "Preencha todos os campos"
+            );
+
+            return;
+        }
+
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailValido.test(email)) {
+
+            toast.error(
+                "Digite um email válido"
+            );
+
+            return;
+        }
+
+        if (senha.length < 6) {
+
+            toast.error(
+                "A senha deve ter pelo menos 6 caracteres"
+            );
+
+            return;
+        }
+
         try {
+
+            setLoading(true);
 
             await api.post(
                 "/usuarios",
@@ -25,7 +65,7 @@ function Register() {
                 }
             );
 
-            alert("Conta criada com sucesso!");
+            toast.success("Conta criada com sucesso!");
 
             navigate("/login");
 
@@ -33,7 +73,9 @@ function Register() {
 
             console.log(error);
 
-            alert("Erro ao criar conta");
+            toast.error("Erro ao criar conta");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -152,6 +194,12 @@ function Register() {
 
                     <button
                         type="submit"
+                        disabled={
+                            loading ||
+                            !nome.trim() ||
+                            !email.trim() ||
+                            !senha.trim()
+                        }
                         className="
                             w-full
                             bg-blue-600
@@ -161,9 +209,15 @@ function Register() {
                             p-4
                             rounded-xl
                             font-bold
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
                         "
                     >
-                        Criar Conta
+                        {
+                            loading
+                                ? "Criando conta..."
+                                : "Criar conta"
+                        }
                     </button>
 
                 </form>

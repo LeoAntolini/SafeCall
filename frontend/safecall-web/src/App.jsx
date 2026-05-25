@@ -1,24 +1,37 @@
 import {
     BrowserRouter,
     Routes,
-    Route,
-    Navigate
+    Route
 } from "react-router-dom";
+
+import { Toaster } from "react-hot-toast";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import PrivateRoute from "./routes/PrivateRoute";
+import Perfil from "./pages/Perfil";
 import Analytics from "./pages/Analytics";
 import NovaDenuncia from "./pages/NovaDenuncia";
-import Perfil from "./pages/Perfil";
+
+import PrivateRoute from "./routes/PrivateRoute";
 
 function App() {
 
     return (
+
         <BrowserRouter>
 
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
+            />
+
             <Routes>
+
+                <Route
+                    path="/"
+                    element={<Login />}
+                />
 
                 <Route
                     path="/login"
@@ -64,11 +77,6 @@ function App() {
                             <Perfil />
                         </PrivateRoute>
                     }
-                />
-
-                <Route
-                    path="*"
-                    element={<Navigate to="/login" />}
                 />
 
             </Routes>

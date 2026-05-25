@@ -1,7 +1,7 @@
-import Layout from "../components/Layout";
-
 import { useState } from "react";
+import toast from "react-hot-toast";
 
+import Layout from "../components/Layout";
 import api from "../services/api";
 
 function NovaDenuncia() {
@@ -10,7 +10,7 @@ function NovaDenuncia() {
     const [tipoGolpe, setTipoGolpe] = useState("");
     const [descricao, setDescricao] = useState("");
 
-    const [erro, setErro] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const formatarTelefone = (valor) => {
 
@@ -33,29 +33,18 @@ function NovaDenuncia() {
 
         e.preventDefault();
 
-        setErro("");
+        if (!numeroTelefone || !tipoGolpe) {
 
-        // VALIDAÇÕES
+            toast.error(
+                "Preencha telefone e tipo de golpe"
+            );
 
-        if (!numeroTelefone.trim()) {
-
-            setErro("O telefone é obrigatório.");
-            return;
-        }
-
-        if (numeroTelefone.length < 15) {
-
-            setErro("Digite um telefone válido.");
-            return;
-        }
-
-        if (!tipoGolpe) {
-
-            setErro("Selecione um tipo de golpe.");
             return;
         }
 
         try {
+
+            setLoading(true);
 
             const token = localStorage.getItem("token");
 
@@ -65,14 +54,13 @@ function NovaDenuncia() {
                 tipoGolpe === "FALSO_BANCO" ||
                 tipoGolpe === "PIX_FALSO"
             ) {
-
                 riscoCalculado = "ALTO";
+            }
 
-            } else if (
+            else if (
                 tipoGolpe === "FALSA_CENTRAL" ||
                 tipoGolpe === "CLONAGEM_WHATSAPP"
             ) {
-
                 riscoCalculado = "MEDIO";
             }
 
@@ -95,13 +83,19 @@ function NovaDenuncia() {
             setTipoGolpe("");
             setDescricao("");
 
-            alert("Denúncia registrada com sucesso!");
+            toast.success("Denúncia registrada!");
 
         } catch (error) {
 
             console.log(error);
 
-            setErro("Erro ao registrar denúncia.");
+            toast.error(
+                "Erro ao registrar denúncia"
+            );
+
+        } finally {
+
+            setLoading(false);
         }
     };
 
@@ -109,215 +103,108 @@ function NovaDenuncia() {
 
         <Layout>
 
-            <div className="
-                max-w-3xl
-                mx-auto
-            ">
+            <div className="bg-white p-6 rounded-2xl shadow">
 
-                <div className="
-                    bg-white
-                    rounded-2xl
-                    shadow
-                    p-8
-                ">
+                <h1 className="text-3xl md:text-4xl font-bold mb-8">
+                    Nova Denúncia
+                </h1>
 
-                    <h1 className="
-                        text-3xl 
-                        md:text-4xl
-                        font-bold
-                        text-gray-800
-                    ">
-                        Nova Denúncia
-                    </h1>
+                <form
+                    onSubmit={criarDenuncia}
+                    className="space-y-5"
+                >
 
-                    <p className="
-                        text-gray-500
-                        mt-2
-                        mb-8
-                    ">
-                        Registre um número suspeito
-                        e ajude a combater golpes telefônicos.
-                    </p>
+                    <input
+                        type="text"
+                        placeholder="(11) 99999-9999"
+                        value={numeroTelefone}
+                        onChange={(e) =>
+                            setNumeroTelefone(
+                                formatarTelefone(e.target.value)
+                            )
+                        }
+                        maxLength={15}
+                        className="w-full border p-3 rounded-lg"
+                    />
 
-                    {
-                        erro && (
-
-                            <div className="
-                                bg-red-100
-                                text-red-700
-                                border
-                                border-red-300
-                                p-4
-                                rounded-xl
-                                mb-6
-                            ">
-                                {erro}
-                            </div>
-
-                        )
-                    }
-
-                    <form
-                        onSubmit={criarDenuncia}
-                        className="space-y-5"
+                    <select
+                        value={tipoGolpe}
+                        onChange={(e) =>
+                            setTipoGolpe(e.target.value)
+                        }
+                        className="w-full border p-3 rounded-lg"
                     >
 
-                        <div>
+                        <option value="">
+                            Selecione o tipo de golpe
+                        </option>
 
-                            <label className="
-                                block
-                                mb-2
-                                font-medium
-                                text-gray-700
-                            ">
-                                Número de telefone
-                            </label>
+                        <option value="FALSO_BANCO">
+                            Falso Banco
+                        </option>
 
-                            <input
-                                type="text"
-                                placeholder="(11) 99999-9999"
-                                value={numeroTelefone}
-                                maxLength={15}
-                                onChange={(e) =>
-                                    setNumeroTelefone(
-                                        formatarTelefone(
-                                            e.target.value
-                                        )
-                                    )
-                                }
-                                className="
-                                    w-full
-                                    border
-                                    border-gray-300
-                                    p-4
-                                    rounded-xl
-                                    outline-none
-                                    focus:border-blue-500
-                                "
-                            />
+                        <option value="FALSA_CENTRAL">
+                            Falsa Central de Atendimento
+                        </option>
 
-                        </div>
+                        <option value="PIX_FALSO">
+                            Golpe do PIX
+                        </option>
 
-                        <div>
+                        <option value="CLONAGEM_WHATSAPP">
+                            Clonagem de WhatsApp
+                        </option>
 
-                            <label className="
-                                block
-                                mb-2
-                                font-medium
-                                text-gray-700
-                            ">
-                                Tipo de golpe
-                            </label>
+                        <option value="PREMIO_FALSO">
+                            Prêmio Falso
+                        </option>
 
-                            <select
-                                value={tipoGolpe}
-                                onChange={(e) =>
-                                    setTipoGolpe(
-                                        e.target.value
-                                    )
-                                }
-                                className="
-                                    w-full
-                                    border
-                                    border-gray-300
-                                    p-4
-                                    rounded-xl
-                                    outline-none
-                                    focus:border-blue-500
-                                "
-                            >
+                        <option value="FALSO_SUPORTE">
+                            Falso Suporte Técnico
+                        </option>
 
-                                <option value="">
-                                    Selecione
-                                </option>
+                        <option value="OUTRO">
+                            Outro
+                        </option>
 
-                                <option value="FALSO_BANCO">
-                                    Falso Banco
-                                </option>
+                    </select>
 
-                                <option value="FALSA_CENTRAL">
-                                    Falsa Central
-                                </option>
+                    <textarea
+                        placeholder="Descrição"
+                        value={descricao}
+                        onChange={(e) =>
+                            setDescricao(e.target.value)
+                        }
+                        className="w-full border p-3 rounded-lg"
+                    />
 
-                                <option value="PIX_FALSO">
-                                    Golpe do PIX
-                                </option>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="
+                            w-full
+                            md:w-auto
+                            bg-blue-600
+                            text-white
+                            px-6
+                            py-3
+                            rounded-lg
+                            hover:bg-blue-700
+                            transition
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
+                        "
+                    >
 
-                                <option value="CLONAGEM_WHATSAPP">
-                                    Clonagem de WhatsApp
-                                </option>
+                        {
+                            loading
+                                ? "Registrando..."
+                                : "Registrar denúncia"
+                        }
 
-                                <option value="PREMIO_FALSO">
-                                    Prêmio Falso
-                                </option>
+                    </button>
 
-                                <option value="FALSO_SUPORTE">
-                                    Falso Suporte Técnico
-                                </option>
-
-                                <option value="OUTRO">
-                                    Outro
-                                </option>
-
-                            </select>
-
-                        </div>
-
-                        <div>
-
-                            <label className="
-                                block
-                                mb-2
-                                font-medium
-                                text-gray-700
-                            ">
-                                Descrição
-                            </label>
-
-                            <textarea
-                                placeholder="
-Descreva como aconteceu o golpe...
-                                "
-                                value={descricao}
-                                onChange={(e) =>
-                                    setDescricao(
-                                        e.target.value
-                                    )
-                                }
-                                className="
-                                    w-full
-                                    border
-                                    border-gray-300
-                                    p-4
-                                    rounded-xl
-                                    h-36
-                                    resize-none
-                                    outline-none
-                                    focus:border-blue-500
-                                "
-                            />
-
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="
-                                w-full
-                                bg-blue-600
-                                hover:bg-blue-700
-                                transition
-                                text-white
-                                font-bold
-                                p-4
-                                rounded-xl
-                            "
-                        >
-                            Registrar denúncia
-                        </button>
-
-                    </form>
-
-                </div>
+                </form>
 
             </div>
 
@@ -325,4 +212,4 @@ Descreva como aconteceu o golpe...
     );
 }
 
-export default NovaDenuncia;
+export default NovaDenuncia

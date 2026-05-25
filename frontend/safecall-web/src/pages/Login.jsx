@@ -2,18 +2,57 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
 
+import toast from "react-hot-toast";
+
+import { useAuth } from "../context/AuthContext";
+
 function Login() {
 
     const navigate = useNavigate();
 
+    const { login } = useAuth();
+
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+
+    const [loading, setLoading] = useState(false);
 
     const fazerLogin = async (e) => {
 
         e.preventDefault();
 
+        if (!email.trim() || !senha.trim()) {
+
+            toast.error(
+                "Preencha todos os campos"
+            );
+
+            return;
+        }
+
+        const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailValido.test(email)) {
+
+            toast.error(
+                "Digite um email válido"
+            );
+
+            return;
+        }
+
+        if (senha.length < 6) {
+
+            toast.error(
+                "A senha deve ter pelo menos 6 caracteres"
+            );
+
+            return;
+        }
+
         try {
+
+            setLoading(true);
 
             const response = await api.post(
                 "/auth/login",
@@ -28,13 +67,19 @@ function Login() {
                 response.data.token
             );
 
+            login(response.data.token);
+
+            toast.success("Login realizado com sucesso!");
+
             navigate("/home");
 
         } catch (error) {
 
             console.log(error);
 
-            alert("Credenciais inválidas");
+            toast.error("Credenciais inválidas");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -132,6 +177,11 @@ function Login() {
 
                     <button
                         type="submit"
+                        disabled={
+                            loading ||
+                            !email.trim() ||
+                            !senha.trim()
+                        }
                         className="
                             w-full
                             bg-blue-600
@@ -141,9 +191,15 @@ function Login() {
                             p-4
                             rounded-xl
                             font-bold
+                            disabled:opacity-50
+                            disabled:cursor-not-allowed
                         "
                     >
-                        Entrar
+                        {
+                            loading
+                                ? "Entrando..."
+                                : "Entrar"
+                        }
                     </button>
 
                 </form>
