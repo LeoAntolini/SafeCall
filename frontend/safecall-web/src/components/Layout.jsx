@@ -7,7 +7,14 @@ import {
     FaSignOutAlt
 } from "react-icons/fa";
 
+import {
+    Link,
+    useLocation
+} from "react-router-dom";
+
 function Layout({ children }) {
+
+    const location = useLocation();
 
     const { usuario, logout } = useAuth();
 
@@ -32,52 +39,99 @@ function Layout({ children }) {
                     SafeCall
                 </h1>
 
-                <nav className="flex flex-col gap-4">
+                <nav className="space-y-3">
 
-                    <button
-                        className="
-                            flex
-                            items-center
-                            gap-3
-                            text-left
-                            hover:text-blue-400
+                    <Link
+                        to="/home"
+                        className={`
+                            block
+                            p-3
+                            rounded-xl
                             transition
-                        "
+
+                            ${location.pathname === "/home"
+                                                ? `
+                                    bg-blue-600
+                                    text-white
+                                `
+                                                : `
+                                    text-gray-300
+                                    hover:bg-white/10
+                                `
+                                            }
+                        `}
                     >
-                        <FaHome />
+                        Home
+                    </Link>
 
-                        Dashboard
-                    </button>
-
-                    <button
-                        className="
-                            flex
-                            items-center
-                            gap-3
-                            text-left
-                            hover:text-blue-400
+                    <Link
+                        to="/nova-denuncia"
+                        className={`
+                            block
+                            p-3
+                            rounded-xl
                             transition
-                        "
-                    >
-                        <FaUser />
 
+                            ${location.pathname === "/nova-denuncia"
+                                                ? `
+                                    bg-blue-600
+                                    text-white
+                                `
+                                                : `
+                                    text-gray-300
+                                    hover:bg-white/10
+                                `
+                                            }
+                        `}
+                    >
+                        Nova Denúncia
+                    </Link>
+
+                    <Link
+                        to="/analytics"
+                        className={`
+                        block
+                        p-3
+                        rounded-xl
+                        transition
+
+                        ${location.pathname === "/analytics"
+                                            ? `
+                                bg-blue-600
+                                text-white
+                            `
+                                            : `
+                                text-gray-300
+                                hover:bg-white/10
+                            `
+                                        }
+                    `}
+                    >
+                        Analytics
+                    </Link>
+                    
+                    <Link
+                        to="/perfil"
+                        className={`
+                        block
+                        p-3
+                        rounded-xl
+                        transition
+
+                        ${location.pathname === "/perfil"
+                                            ? `
+                                bg-blue-600
+                                text-white
+                            `
+                                            : `
+                                text-gray-300
+                                hover:bg-white/10
+                            `
+                                        }
+                    `}
+                    >
                         Perfil
-                    </button>
-
-                    <button
-                        className="
-                            flex
-                            items-center
-                            gap-3
-                            text-left
-                            hover:text-blue-400
-                            transition
-                        "
-                    >
-                        <FaExclamationTriangle />
-
-                        Chamados
-                    </button>
+                    </Link>
 
                 </nav>
 

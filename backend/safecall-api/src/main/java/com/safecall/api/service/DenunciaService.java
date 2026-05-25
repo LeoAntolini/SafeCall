@@ -42,4 +42,20 @@ public class DenunciaService {
     public List<Denuncia> listarDenuncias() {
         return denunciaRepository.findAll();
     }
+
+    public Denuncia atualizarStatus(
+            Long id,
+            String novoStatus) {
+
+        Denuncia denuncia = denunciaRepository
+                .findById(id)
+                .orElseThrow(
+                        () -> new RuntimeException(
+                                "Denúncia não encontrada"));
+
+        denuncia.setStatus(novoStatus);
+
+        return denunciaRepository.save(
+                denuncia);
+    }
 }

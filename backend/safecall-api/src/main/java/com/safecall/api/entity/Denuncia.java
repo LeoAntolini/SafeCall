@@ -10,12 +10,21 @@ public class Denuncia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String numeroTelefone;
-
+    
     private String tipoGolpe;
-
+    
     private String descricao;
+    private String nivelRisco;
+
+    private String status;
+
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     public Long getId() {
         return id;
@@ -81,15 +90,4 @@ public class Denuncia {
         this.usuario = usuario;
     }
 
-    private String nivelRisco;
-
-    private String status;
-
-    private LocalDateTime createdAt;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
-
-    // getters e setters
 }

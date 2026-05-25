@@ -7,8 +7,11 @@ import {
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
 import PrivateRoute from "./routes/PrivateRoute";
+import Analytics from "./pages/Analytics";
+import NovaDenuncia from "./pages/NovaDenuncia";
+import Perfil from "./pages/Perfil";
 
 function App() {
 
@@ -22,16 +25,43 @@ function App() {
                     element={<Login />}
                 />
 
-                <Route 
+                <Route
                     path="/register"
                     element={<Register />}
-                />  
+                />
 
                 <Route
-                    path="/dashboard"
+                    path="/home"
                     element={
                         <PrivateRoute>
-                            <Dashboard />
+                            <Home />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/nova-denuncia"
+                    element={
+                        <PrivateRoute>
+                            <NovaDenuncia />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/analytics"
+                    element={
+                        <PrivateRoute>
+                            <Analytics />
+                        </PrivateRoute>
+                    }
+                />
+
+                <Route
+                    path="/perfil"
+                    element={
+                        <PrivateRoute>
+                            <Perfil />
                         </PrivateRoute>
                     }
                 />

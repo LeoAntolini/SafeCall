@@ -28,7 +28,7 @@ function Login() {
                 response.data.token
             );
 
-            navigate("/dashboard");
+            navigate("/home");
 
         } catch (error) {
 

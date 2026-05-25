@@ -12,6 +12,8 @@ import org.springframework.security.core.Authentication;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/denuncias")
 public class DenunciaController {
@@ -22,20 +24,32 @@ public class DenunciaController {
     @PostMapping
     public ResponseEntity<Denuncia> criarDenuncia(
             @RequestBody DenunciaRequestDTO dto,
-            Authentication auth
-    ) {
+            Authentication auth) {
 
         String email = auth.getName();
 
         return ResponseEntity.ok(
-            denunciaService.criarDenuncia(dto, email)
-        );
+                denunciaService.criarDenuncia(dto, email));
     }
 
     @GetMapping
     public ResponseEntity<?> listar() {
         return ResponseEntity.ok(
-            denunciaService.listarDenuncias()
-        );
+                denunciaService.listarDenuncias());
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<Denuncia> atualizarStatus(
+
+            @PathVariable Long id,
+
+            @RequestBody Map<String, String> body) {
+
+        Denuncia denunciaAtualizada = denunciaService.atualizarStatus(
+                id,
+                body.get("status"));
+
+        return ResponseEntity.ok(
+                denunciaAtualizada);
     }
 }
