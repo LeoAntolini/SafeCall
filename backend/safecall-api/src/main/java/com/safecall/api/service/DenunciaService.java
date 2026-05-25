@@ -44,14 +44,26 @@ public class DenunciaService {
     }
 
     public Denuncia atualizarStatus(
+
             Long id,
-            String novoStatus) {
+
+            String novoStatus,
+
+            String emailUsuario) {
 
         Denuncia denuncia = denunciaRepository
                 .findById(id)
                 .orElseThrow(
                         () -> new RuntimeException(
                                 "Denúncia não encontrada"));
+
+        if (!denuncia.getUsuario()
+                .getEmail()
+                .equals(emailUsuario)) {
+
+            throw new RuntimeException(
+                    "Acesso negado");
+        }
 
         denuncia.setStatus(novoStatus);
 

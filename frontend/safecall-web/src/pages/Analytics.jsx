@@ -14,15 +14,15 @@ import {
 
 
 function Analytics() {
-    
+
     const [denuncias, setDenuncias] = useState([]);
-    
+
     const buscarDenuncias = async () => {
-        
+
         try {
-            
+
             const token = localStorage.getItem("token");
-            
+
             const response = await api.get(
                 "/denuncias",
                 {
@@ -31,31 +31,31 @@ function Analytics() {
                     }
                 }
             );
-            
+
             setDenuncias(response.data);
-            
+
         } catch (error) {
-            
+
             console.log(error);
-            
+
             alert("Erro ao buscar analytics");
         }
     };
-    
+
     useEffect(() => {
         buscarDenuncias();
     }, []);
-    
+
     const rankingGolpes = {};
-    
+
     denuncias.forEach((denuncia) => {
-        
+
         if (rankingGolpes[denuncia.tipoGolpe]) {
-            
+
             rankingGolpes[denuncia.tipoGolpe]++;
-            
+
         } else {
-            
+
             rankingGolpes[denuncia.tipoGolpe] = 1;
         }
     });
@@ -63,12 +63,12 @@ function Analytics() {
     const dadosGrafico = Object.entries(
         rankingGolpes
     ).map(([tipo, quantidade]) => ({
-        
+
         name: tipo.replaceAll("_", " "),
         value: quantidade
-        
+
     }));
-    
+
     const COLORS = [
         "#2563eb",
         "#dc2626",
@@ -77,33 +77,33 @@ function Analytics() {
         "#9333ea",
         "#0891b2"
     ];
-    
+
     const rankingNumeros = {};
-    
+
     denuncias.forEach((denuncia) => {
-    
+
         if (rankingNumeros[denuncia.numeroTelefone]) {
-    
+
             rankingNumeros[
                 denuncia.numeroTelefone
             ]++;
-    
+
         } else {
-    
+
             rankingNumeros[
                 denuncia.numeroTelefone
             ] = 1;
         }
     });
-    
+
     const numerosCriticos = Object.entries(
         rankingNumeros
     ).filter(
         ([_, quantidade]) => quantidade >= 5
     );
-    
+
     return (
-        
+
         <Layout>
 
             <div className="
@@ -114,7 +114,8 @@ function Analytics() {
             ">
 
                 <h1 className="
-                    text-4xl
+                    text-3xl
+                    md:text-4xl
                     font-bold
                     text-gray-800
                 ">
@@ -132,7 +133,9 @@ function Analytics() {
 
                 <div className="
                     grid
-                    grid-cols-3
+                    grid-cols-1
+                    md:grid-cols-2
+                    xl:grid-cols-3
                     gap-6
                     mb-10
                 ">
@@ -148,7 +151,8 @@ function Analytics() {
                         </h2>
 
                         <p className="
-                            text-4xl
+                            text-3xl
+                            md:text-4xl
                             font-bold
                             mt-3
                             text-blue-700
@@ -169,7 +173,8 @@ function Analytics() {
                         </h2>
 
                         <p className="
-                            text-4xl
+                            text-3xl
+                            md:text-4xl
                             font-bold
                             mt-3
                             text-red-600
@@ -195,7 +200,8 @@ function Analytics() {
                         </h2>
 
                         <p className="
-                            text-4xl
+                            text-3xl
+                            md:text-4xl
                             font-bold
                             mt-3
                             text-green-600
@@ -228,8 +234,9 @@ function Analytics() {
                     <div
                         style={{
                             width: "100%",
-                            height: 400
+                            height: 300,
                         }}
+
                     >
 
                         <ResponsiveContainer
@@ -425,15 +432,15 @@ function Analytics() {
                                         text-sm
 
                                         ${quantidade >= 5
-                                                            ? `
+                                            ? `
                                                 bg-red-100
                                                 text-red-700
                                             `
-                                                            : `
+                                            : `
                                                 bg-yellow-100
                                                 text-yellow-700
                                             `
-                                                        }
+                                        }
                                     `}>
 
                                         {quantidade} denúncias

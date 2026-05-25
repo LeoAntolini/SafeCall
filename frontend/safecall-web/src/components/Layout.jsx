@@ -1,16 +1,18 @@
+import { useState } from "react";
+
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import {
-    FaHome,
-    FaUser,
-    FaExclamationTriangle,
-    FaSignOutAlt
-} from "react-icons/fa";
 
 import {
+    useNavigate,
     Link,
     useLocation
 } from "react-router-dom";
+
+import {
+    FaBars,
+    FaTimes,
+    FaSignOutAlt
+} from "react-icons/fa";
 
 function Layout({ children }) {
 
@@ -20,6 +22,9 @@ function Layout({ children }) {
 
     const navigate = useNavigate();
 
+    const [menuAberto, setMenuAberto] =
+        useState(false);
+
     function sair() {
 
         logout();
@@ -27,22 +32,97 @@ function Layout({ children }) {
         navigate("/");
     }
 
+    function fecharMenu() {
+
+        setMenuAberto(false);
+    }
+
     return (
 
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="
+            min-h-screen
+            bg-gray-100
+            flex
+        ">
+
+            {/* OVERLAY MOBILE */}
+
+            {
+                menuAberto && (
+
+                    <div
+                        onClick={fecharMenu}
+                        className="
+                            fixed
+                            inset-0
+                            bg-black/50
+                            z-40
+                            lg:hidden
+                        "
+                    />
+
+                )
+            }
 
             {/* SIDEBAR */}
 
-            <aside className="w-64 bg-gray-900 text-white p-6">
+            <aside className={`
+                fixed
+                top-0
+                left-0
+                z-50
 
-                <h1 className="text-3xl font-bold mb-10">
-                    SafeCall
-                </h1>
+                h-screen
+                w-64
+
+                bg-gray-900
+                text-white
+                p-6
+
+                transform
+                transition-transform
+                duration-300
+
+                ${menuAberto
+                    ? "translate-x-0"
+                    : "-translate-x-full"
+                }
+
+                lg:translate-x-0
+                lg:static
+            `}>
+
+                <div className="
+                    flex
+                    items-center
+                    justify-between
+                    mb-10
+                ">
+
+                    <h1 className="
+                        text-3xl
+                        font-bold
+                    ">
+                        SafeCall
+                    </h1>
+
+                    <button
+                        onClick={fecharMenu}
+                        className="
+                            lg:hidden
+                            text-2xl
+                        "
+                    >
+                        <FaTimes />
+                    </button>
+
+                </div>
 
                 <nav className="space-y-3">
 
                     <Link
                         to="/home"
+                        onClick={fecharMenu}
                         className={`
                             block
                             p-3
@@ -50,15 +130,15 @@ function Layout({ children }) {
                             transition
 
                             ${location.pathname === "/home"
-                                                ? `
+                                ? `
                                     bg-blue-600
                                     text-white
                                 `
-                                                : `
+                                : `
                                     text-gray-300
                                     hover:bg-white/10
                                 `
-                                            }
+                            }
                         `}
                     >
                         Home
@@ -66,6 +146,7 @@ function Layout({ children }) {
 
                     <Link
                         to="/nova-denuncia"
+                        onClick={fecharMenu}
                         className={`
                             block
                             p-3
@@ -73,15 +154,15 @@ function Layout({ children }) {
                             transition
 
                             ${location.pathname === "/nova-denuncia"
-                                                ? `
+                                ? `
                                     bg-blue-600
                                     text-white
                                 `
-                                                : `
+                                : `
                                     text-gray-300
                                     hover:bg-white/10
                                 `
-                                            }
+                            }
                         `}
                     >
                         Nova Denúncia
@@ -89,46 +170,48 @@ function Layout({ children }) {
 
                     <Link
                         to="/analytics"
+                        onClick={fecharMenu}
                         className={`
-                        block
-                        p-3
-                        rounded-xl
-                        transition
+                            block
+                            p-3
+                            rounded-xl
+                            transition
 
-                        ${location.pathname === "/analytics"
-                                            ? `
-                                bg-blue-600
-                                text-white
-                            `
-                                            : `
-                                text-gray-300
-                                hover:bg-white/10
-                            `
-                                        }
-                    `}
+                            ${location.pathname === "/analytics"
+                                ? `
+                                    bg-blue-600
+                                    text-white
+                                `
+                                : `
+                                    text-gray-300
+                                    hover:bg-white/10
+                                `
+                            }
+                        `}
                     >
                         Analytics
                     </Link>
-                    
+
                     <Link
                         to="/perfil"
+                        onClick={fecharMenu}
                         className={`
-                        block
-                        p-3
-                        rounded-xl
-                        transition
+                            block
+                            p-3
+                            rounded-xl
+                            transition
 
-                        ${location.pathname === "/perfil"
-                                            ? `
-                                bg-blue-600
-                                text-white
-                            `
-                                            : `
-                                text-gray-300
-                                hover:bg-white/10
-                            `
-                                        }
-                    `}
+                            ${location.pathname === "/perfil"
+                                ? `
+                                    bg-blue-600
+                                    text-white
+                                `
+                                : `
+                                    text-gray-300
+                                    hover:bg-white/10
+                                `
+                            }
+                        `}
                     >
                         Perfil
                     </Link>
@@ -137,7 +220,10 @@ function Layout({ children }) {
 
                 <div className="mt-10">
 
-                    <p className="text-sm text-gray-400">
+                    <p className="
+                        text-sm
+                        text-gray-400
+                    ">
                         Usuário logado
                     </p>
 
@@ -152,9 +238,10 @@ function Layout({ children }) {
                             bg-red-500
                             px-4
                             py-2
-                            rounded
+                            rounded-lg
                             hover:bg-red-600
                             transition
+
                             flex
                             items-center
                             gap-2
@@ -169,31 +256,28 @@ function Layout({ children }) {
 
             </aside>
 
-            <main className="flex-1 bg-gray-100">
+            {/* CONTEÚDO */}
+
+            <main className="
+                flex-1
+                min-w-0
+            ">
 
                 {/* TOPBAR */}
 
                 <header className="
                     bg-white
                     shadow-sm
-                    px-10
+
+                    px-4
+                    md:px-10
+
                     py-4
+
                     flex
                     items-center
                     justify-between
                 ">
-
-                    <div>
-
-                        <h2 className="
-                            text-2xl
-                            font-bold
-                            text-gray-800
-                        ">
-                            Painel Administrativo
-                        </h2>
-
-                    </div>
 
                     <div className="
                         flex
@@ -201,43 +285,56 @@ function Layout({ children }) {
                         gap-4
                     ">
 
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
+                        <button
+                            onClick={() =>
+                                setMenuAberto(true)
+                            }
                             className="
-                                border
-                                rounded-lg
-                                px-4
-                                py-2
-                                outline-none
-                                focus:ring-2
-                                focus:ring-blue-400
+                                lg:hidden
+                                text-2xl
+                                text-gray-700
                             "
-                        />
+                        >
+                            <FaBars />
+                        </button>
 
-                        <div className="
-                            w-10
-                            h-10
-                            rounded-full
-                            bg-blue-500
-                            flex
-                            items-center
-                            justify-center
-                            text-white
+                        <h2 className="
+                            text-lg
+                            md:text-2xl
                             font-bold
+                            text-gray-800
                         ">
+                            SafeCall
+                        </h2>
 
-                            {usuario?.nome?.charAt(0)}
+                    </div>
 
-                        </div>
+                    <div className="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-blue-500
+
+                        flex
+                        items-center
+                        justify-center
+
+                        text-white
+                        font-bold
+                    ">
+
+                        {usuario?.nome?.charAt(0)}
 
                     </div>
 
                 </header>
 
-                {/* CONTEÚDO */}
+                {/* PÁGINAS */}
 
-                <div className="p-10">
+                <div className="
+                    p-4
+                    md:p-10
+                ">
 
                     {children}
 

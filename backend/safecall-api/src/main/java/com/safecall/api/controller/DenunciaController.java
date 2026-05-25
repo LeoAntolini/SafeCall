@@ -18,38 +18,43 @@ import java.util.Map;
 @RequestMapping("/denuncias")
 public class DenunciaController {
 
-    @Autowired
-    private DenunciaService denunciaService;
+        @Autowired
+        private DenunciaService denunciaService;
 
-    @PostMapping
-    public ResponseEntity<Denuncia> criarDenuncia(
-            @RequestBody DenunciaRequestDTO dto,
-            Authentication auth) {
+        @PostMapping
+        public ResponseEntity<Denuncia> criarDenuncia(
+                        @RequestBody DenunciaRequestDTO dto,
+                        Authentication auth) {
 
-        String email = auth.getName();
+                String email = auth.getName();
 
-        return ResponseEntity.ok(
-                denunciaService.criarDenuncia(dto, email));
-    }
+                return ResponseEntity.ok(
+                                denunciaService.criarDenuncia(dto, email));
+        }
 
-    @GetMapping
-    public ResponseEntity<?> listar() {
-        return ResponseEntity.ok(
-                denunciaService.listarDenuncias());
-    }
+        @GetMapping
+        public ResponseEntity<?> listar() {
+                return ResponseEntity.ok(
+                                denunciaService.listarDenuncias());
+        }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<Denuncia> atualizarStatus(
+        @PutMapping("/{id}/status")
+        public ResponseEntity<Denuncia> atualizarStatus(
 
-            @PathVariable Long id,
+                        @PathVariable Long id,
 
-            @RequestBody Map<String, String> body) {
+                        @RequestBody Map<String, String> body,
 
-        Denuncia denunciaAtualizada = denunciaService.atualizarStatus(
-                id,
-                body.get("status"));
+                        Authentication authentication) {
 
-        return ResponseEntity.ok(
-                denunciaAtualizada);
-    }
+                String emailUsuario = authentication.getName();
+
+                Denuncia denunciaAtualizada = denunciaService.atualizarStatus(
+                                id,
+                                body.get("status"),
+                                emailUsuario);
+
+                return ResponseEntity.ok(
+                                denunciaAtualizada);
+        }
 }
